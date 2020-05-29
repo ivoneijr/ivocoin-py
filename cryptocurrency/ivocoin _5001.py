@@ -10,8 +10,8 @@ class Blockchain:
 
     def __init__(self):
         self.chain = []
-        self.create_block(proof=1, previous_hash='0')
         self.transactions = []
+        self.create_block(proof=1, previous_hash='0')
         self.nodes = set()
 
     def create_block(self, proof, previous_hash):
@@ -82,7 +82,7 @@ class Blockchain:
             response = requests.get(F'http://{node}/get_chain')
             
             if response.status_code == 200:
-                length = len(response.json()['length'])
+                length = response.json()['length']
                 chain = response.json()['chain']
                 
                 if length > max_length and self.is_chain_valid(chain):
@@ -160,16 +160,17 @@ def connect_node():
     
     for node in nodes:
         blockchain.add_node(node)
-    
+
     response = {'message': 'All nodes was connected',
                 'total_nodes': list(blockchain.nodes)}
-    
+
     return jsonify(response), 201
+
 
 @app.route('/replace_chain',methods= ['GET'])
 def replace_chain():
-    # is_chain_replaced = blockchain.replace_chain()
-    if blockchain.replace_chain():
+    is_chain_replaced = blockchain.replace_chain()
+    if is_chain_replaced:
         response = {'message': 'the nodes have been replaced',
                     'new_chain' : blockchain.chain}
     else:
@@ -178,4 +179,4 @@ def replace_chain():
     
     return jsonify(response), 201 
 
-app.run(host='0.0.0.0', port=5001
+app.run(host='0.0.0.0', port=5001)
