@@ -1,4 +1,4 @@
-# History blocks fullnode
+# ivo-chain
 
 Custom blockchain implementation
 
